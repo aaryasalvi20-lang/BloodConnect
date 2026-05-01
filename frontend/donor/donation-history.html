@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation History - BloodConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { primary: '#dc2626' } } }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 font-['Inter'] dark:bg-gray-900 dark:text-gray-100 flex h-screen overflow-hidden">
+    <aside class="w-64 bg-white shadow-md dark:bg-gray-800 flex-shrink-0 flex flex-col transition-all duration-300 z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
+            <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-2 text-xl font-bold">BloodConnect</span>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <nav class="space-y-1 px-3" id="sidebar-nav">
+                <!-- Injected by script.js -->
+            </nav>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 dark:bg-gray-800 dark:border-b dark:border-gray-700 z-10">
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Donation History</h1>
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                    <span class="user-init">D</span>
+                </div>
+                <span class="user-name-display text-sm font-medium">Donor Name</span>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 p-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 dark:bg-gray-700/50 text-[10px] text-gray-400 font-bold uppercase tracking-widest border-b border-gray-100 dark:border-gray-600">
+                                <th class="px-6 py-4">Date</th>
+                                <th class="px-6 py-4">Venue / Location</th>
+                                <th class="px-6 py-4">Blood Group</th>
+                                <th class="px-6 py-4">Units</th>
+                                <th class="px-6 py-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-list" class="divide-y divide-gray-50 dark:divide-gray-700">
+                            <!-- Loaded dynamically -->
+                            <tr>
+                                <td colspan="5" class="px-6 py-20 text-center text-gray-400 italic">No donation records found. Be a hero today!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = checkAuth();
+            if(!user || user.role !== 'donor') return;
+
+            async function loadHistory() {
+                try {
+                    const history = await apiFetch('/donors/history').catch(() => []);
+                    const list = document.getElementById('history-list');
+
+                    if (history.length > 0) {
+                        list.innerHTML = history.map(item => `
+                            <tr class="text-sm hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
+                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-100">${new Date(item.donation_date).toLocaleDateString()}</td>
+                                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">
+                                    <p class="font-bold">${item.venue_name || 'N/A'}</p>
+                                    <p class="text-[10px] opacity-60 uppercase">${item.hospital_name || item.camp_name || 'General'}</p>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-red-50 text-primary font-black rounded-lg dark:bg-red-900/20">${item.blood_group}</span>
+                                </td>
+                                <td class="px-6 py-4 font-bold">${item.units || '-'} ml</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-0.5 text-[10px] font-bold rounded border border-green-200 bg-green-100 text-green-700 uppercase tracking-widest">${item.status}</span>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+                } catch(e) {
+                    console.error(e);
+                }
+            }
+            loadHistory();
+        });
+    </script>
+</body>
+</html>

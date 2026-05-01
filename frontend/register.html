@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - BloodConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { primary: '#dc2626' } } }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body
+    class="bg-gray-50 text-gray-900 font-['Inter'] dark:bg-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-xl w-full space-y-8 glass p-10 rounded-2xl shadow-xl dark:bg-gray-800">
+        <div>
+            <h2 class="mt-2 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+                Create an account
+            </h2>
+        </div>
+
+        <!-- Toggle Tabs -->
+        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+            <button id="tab-donor"
+                class="flex-1 py-4 text-center font-medium text-primary border-b-2 border-primary focus:outline-none">
+                Donor
+            </button>
+            <button id="tab-hospital"
+                class="flex-1 py-4 text-center font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none border-b-2 border-transparent">
+                Hospital
+            </button>
+            <button id="tab-camp"
+                class="flex-1 py-4 text-center font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none border-b-2 border-transparent">
+                Camp
+            </button>
+        </div>
+
+        <form id="register-form" class="space-y-6">
+            <div id="error-message"
+                class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Common Fields -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name / Organization
+                        Name</label>
+                    <input name="name" type="text" required
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
+                    <input name="email" type="email" required
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                    <input name="password" type="password" required
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">City / Location</label>
+                    <input name="location" type="text" required placeholder="e.g. New York"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+
+                <!-- Donor Specific Fields -->
+                <div class="donor-field">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date of Birth</label>
+                    <input id="dob" name="dob" type="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="donor-field">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                    <input id="donor_phone" name="donor_phone" type="tel" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="donor-field">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Blood Group</label>
+                    <select id="blood_group" name="blood_group" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="donor-field">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Donor ID (Optional)</label>
+                    <input id="donor_id_number" name="donor_id_number" type="text" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="donor-field">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Any Disease?</label>
+                    <select id="disease_status" name="disease_status" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div id="disease_details_container" class="donor-field hidden">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Disease Details</label>
+                    <input id="disease_details" name="disease_details" type="text" placeholder="Specify disease" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="donor-field md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Last Donation Date
+                        (Optional)</label>
+                    <input id="last_donation_date" name="last_donation_date" type="date"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+
+                <!-- Hospital Specific Fields -->
+                <div class="hospital-field md:col-span-2 hidden">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">License Number</label>
+                    <input id="license_number" name="license_number" type="text" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="hospital-field md:col-span-2 hidden">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                    <input id="hospital_phone" name="hospital_phone" type="tel" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+
+                <!-- Camp Specific Fields -->
+                <div class="camp-field md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Organizer Name</label>
+                    <input id="organizer_name" name="organizer_name" type="text"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="camp-field md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Organizer Type</label>
+                    <select id="organizer_type" name="organizer_type"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="NGO">NGO</option>
+                        <option value="College">College</option>
+                        <option value="Private Organization">Private Organization</option>
+                        <option value="Government">Government</option>
+                    </select>
+                </div>
+                <div class="camp-field md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                    <input id="phone_number" name="phone_number" type="tel"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" id="submit-btn"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition shadow-md">
+                    <span id="btn-text">Sign Up</span>
+                    <div id="btn-spinner" class="spinner hidden ml-2 border-white border-t-transparent"></div>
+                </button>
+            </div>
+        </form>
+        <div class="text-center text-sm mt-4">
+            <span class="text-gray-600 dark:text-gray-400">Already have an account? </span>
+            <a href="login.html" class="font-medium text-primary hover:text-red-500 transition">Sign in</a>
+        </div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button id="theme-toggle"
+        class="absolute top-4 right-4 p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 transition">
+        <svg id="moon-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+        <svg id="sun-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 4.22a1 1 0 011.415 0l.708.708a1 1 0 01-1.414 1.414l-.708-.708a1 1 0 010-1.414zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM14.22 15.636a1 1 0 010 1.414l-.708.708a1 1 0 01-1.414-1.414l.708-.708a1 1 0 011.414 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-1.414a1 1 0 01-1.414 1.414l-.708-.708a1 1 0 011.414-1.414l.708.708zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zM5.78 5.636a1 1 0 010-1.414l.708-.708a1 1 0 011.414 1.414l-.708.708a1 1 0 01-1.414 0z">
+            </path>
+        </svg>
+    </button>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let role = 'donor';
+            const tabDonor = document.getElementById('tab-donor');
+            const tabHospital = document.getElementById('tab-hospital');
+            const tabCamp = document.getElementById('tab-camp');
+            const form = document.getElementById('register-form');
+            const donorFields = document.querySelectorAll('.donor-field');
+            const hospitalFields = document.querySelectorAll('.hospital-field');
+            const campFields = document.querySelectorAll('.camp-field');
+            const diseaseStatus = document.getElementById('disease_status');
+            const diseaseDetailsContainer = document.getElementById('disease_details_container');
+            const errorDiv = document.getElementById('error-message');
+            const btnText = document.getElementById('btn-text');
+            const btnSpinner = document.getElementById('btn-spinner');
+
+            diseaseStatus.addEventListener('change', () => {
+                if (diseaseStatus.value === 'Yes') {
+                    diseaseDetailsContainer.classList.remove('hidden');
+                } else {
+                    diseaseDetailsContainer.classList.add('hidden');
+                }
+            });
+
+            function switchTab(newRole) {
+                role = newRole;
+
+                // Reset all tabs
+                [tabDonor, tabHospital, tabCamp].forEach(tab => {
+                    tab.classList.replace('text-primary', 'text-gray-500');
+                    tab.classList.replace('border-primary', 'border-transparent');
+                });
+
+                // Clear fields when switching (keeping common fields if desired, or reset whole form)
+                // The user specifically asked to clear values.
+                const commonInputs = ['name', 'email', 'password', 'location'];
+                Array.from(form.elements).forEach(input => {
+                    if (input.name && !commonInputs.includes(input.name)) {
+                        if (input.type === 'select-one') input.selectedIndex = 0;
+                        else input.value = '';
+                    }
+                });
+
+                // Set active tab
+                const activeTab = role === 'donor' ? tabDonor : (role === 'hospital' ? tabHospital : tabCamp);
+                activeTab.classList.replace('text-gray-500', 'text-primary');
+                activeTab.classList.replace('border-transparent', 'border-primary');
+
+                // Toggle fields
+                donorFields.forEach(el => el.style.display = role === 'donor' ? 'block' : 'none');
+                hospitalFields.forEach(el => el.style.display = role === 'hospital' ? 'block' : 'none');
+                campFields.forEach(el => el.style.display = role === 'camp' ? 'block' : 'none');
+
+                // Required fields
+                document.getElementById('dob').required = role === 'donor';
+                document.getElementById('donor_phone').required = role === 'donor';
+                document.getElementById('blood_group').required = role === 'donor';
+                
+                document.getElementById('license_number').required = role === 'hospital';
+                document.getElementById('hospital_phone').required = role === 'hospital';
+
+                document.getElementById('organizer_name').required = role === 'camp';
+                document.getElementById('organizer_type').required = role === 'camp';
+                document.getElementById('phone_number').required = role === 'camp';
+
+                // Explicitly remove required for non-active roles to avoid browser validation blocking
+                if (role !== 'donor') {
+                    document.getElementById('dob').required = false;
+                    document.getElementById('donor_phone').required = false;
+                    document.getElementById('blood_group').required = false;
+                }
+                if (role !== 'hospital') {
+                    document.getElementById('license_number').required = false;
+                    document.getElementById('hospital_phone').required = false;
+                }
+                if (role !== 'camp') {
+                    document.getElementById('organizer_name').required = false;
+                    document.getElementById('organizer_type').required = false;
+                    document.getElementById('phone_number').required = false;
+                }
+
+                // Special handling for disease details hidden state
+                if(role === 'donor' && diseaseStatus.value === 'Yes') {
+                    diseaseDetailsContainer.classList.remove('hidden');
+                } else {
+                    diseaseDetailsContainer.classList.add('hidden');
+                }
+            }
+
+            tabDonor.addEventListener('click', () => switchTab('donor'));
+            tabHospital.addEventListener('click', () => switchTab('hospital'));
+            tabCamp.addEventListener('click', () => switchTab('camp'));
+
+            // initialize view
+            switchTab('donor');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorDiv.classList.add('hidden');
+                btnText.classList.add('hidden');
+                btnSpinner.classList.remove('hidden');
+
+                const payload = {
+                    name: form.name.value,
+                    email: form.email.value,
+                    password: form.password.value,
+                    location: form.location.value
+                };
+
+                if (role === 'donor') {
+                    const dob = new Date(form.dob.value);
+                    const ageDifMs = Date.now() - dob.getTime();
+                    const ageDate = new Date(ageDifMs);
+                    const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+                    
+                    if (age < 18 || age > 65) {
+                        throw new Error('Age must be between 18 and 65');
+                    }
+
+                    payload.dob = form.dob.value;
+                    payload.age = age;
+                    payload.donor_phone = form.donor_phone.value;
+                    payload.blood_group = form.blood_group.value;
+                    payload.disease_status = form.disease_status.value;
+                    payload.disease_details = form.disease_details.value;
+                    payload.donor_id_number = form.donor_id_number.value;
+
+                    if (form.last_donation_date.value) {
+                        payload.last_donation_date = form.last_donation_date.value;
+                    }
+                } else if (role === 'hospital') {
+                    payload.license_number = form.license_number.value;
+                    payload.hospital_phone = form.hospital_phone.value;
+                } else if (role === 'camp') {
+                    payload.organizer_name = form.organizer_name.value;
+                    payload.organizer_type = form.organizer_type.value;
+                    payload.phone_number = form.phone_number.value;
+                }
+
+                try {
+                    const data = await apiFetch(`/auth/register/${role}`, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    loginSuccess(data);
+                } catch (error) {
+                    errorDiv.textContent = error.message;
+                    errorDiv.classList.remove('hidden');
+                } finally {
+                    btnText.classList.remove('hidden');
+                    btnSpinner.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

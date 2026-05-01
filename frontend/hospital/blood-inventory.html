@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Inventory - BloodConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { primary: '#dc2626' } } }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 font-['Inter'] dark:bg-gray-900 dark:text-gray-100 flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md dark:bg-gray-800 flex-shrink-0 flex flex-col transition-all duration-300 z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
+            <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-2 text-xl font-bold">BloodConnect</span>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <nav class="space-y-1 px-3" id="sidebar-nav">
+                <!-- Injected by script.js -->
+            </nav>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 dark:bg-gray-800 dark:border-b dark:border-gray-700 z-10">
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Blood Inventory</h1>
+            <div class="flex items-center space-x-4">
+                <button onclick="addStockModal()" class="inline-flex items-center px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-red-700 transition shadow-sm uppercase tracking-widest">
+                    <i class="fas fa-plus mr-2"></i> Update Stock
+                </button>
+                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                    <span class="user-init">H</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 p-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-8" id="inventory-grid">
+                <!-- Loaded dynamically -->
+                <div class="col-span-full py-10 text-center text-gray-400 italic">Initializing inventory...</div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                    <h2 class="font-bold text-gray-900 dark:text-white">Stock Status Logs</h2>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Last 30 Days</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-gray-50 dark:bg-gray-700/50 text-[10px] text-gray-400 font-bold uppercase tracking-widest border-b border-gray-100 dark:border-gray-600">
+                                <th class="px-6 py-4">Blood Group</th>
+                                <th class="px-6 py-4">Available Units (ml)</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Last Updated</th>
+                                <th class="px-6 py-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-list" class="divide-y divide-gray-50 dark:divide-gray-700">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Update Stock Modal (Hidden) -->
+    <div id="stock-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-gray-200 dark:border-gray-700">
+            <h3 class="text-xl font-bold mb-6">Update Blood Stock</h3>
+            <form id="stock-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Blood Group</label>
+                    <select id="modal-blood-group" required class="w-full px-4 py-2 border border-gray-200 rounded-xl dark:bg-gray-700 dark:border-gray-600">
+                        <option value="A+">A+</option><option value="A-">A-</option>
+                        <option value="B+">B+</option><option value="B-">B-</option>
+                        <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                        <option value="O+">O+</option><option value="O-">O-</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Action</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center justify-center py-2 px-4 border rounded-xl cursor-pointer hover:bg-gray-50 peer-checked:bg-primary/10 peer-checked:border-primary">
+                            <input type="radio" name="stock-action" value="add" checked class="mr-2"> Add
+                        </label>
+                        <label class="flex items-center justify-center py-2 px-4 border rounded-xl cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="stock-action" value="set" class="mr-2"> Set New
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Quantity (ml)</label>
+                    <input type="number" id="modal-units" required min="0" placeholder="Enter amount..." class="w-full px-4 py-2 border border-gray-200 rounded-xl dark:bg-gray-700 dark:border-gray-600">
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="button" onclick="closeStockModal()" class="flex-1 py-2 text-sm font-bold text-gray-500 hover:text-gray-700">Cancel</button>
+                    <button type="submit" class="flex-1 py-2 bg-primary text-white text-sm font-bold rounded-xl shadow-lg">Update Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = checkAuth();
+            if(!user || user.role !== 'hospital') return;
+
+            const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+            
+            async function loadInventory() {
+                try {
+                    const inventory = await apiFetch('/hospitals/inventory').catch(() => []);
+                    const grid = document.getElementById('inventory-grid');
+                    const list = document.getElementById('inventory-list');
+                    
+                    // Create map for easy lookup
+                    const stockMap = {};
+                    inventory.forEach(item => stockMap[item.blood_group] = item);
+
+                    grid.innerHTML = bloodGroups.map(bg => {
+                        const stock = stockMap[bg] || { units: 0 };
+                        const isLow = stock.units < 1000;
+                        return `
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border ${isLow ? 'border-red-200 bg-red-50/10' : 'border-gray-100 dark:border-gray-700'} text-center group active:scale-95 transition cursor-pointer" onclick="openQuickUpdate('${bg}')">
+                            <p class="text-xs font-black text-primary mb-1">${bg}</p>
+                            <p class="text-lg font-bold">${stock.units}</p>
+                            <p class="text-[9px] text-gray-400 uppercase">ml</p>
+                            ${isLow ? '<p class="text-[8px] font-bold text-red-500 mt-2 uppercase animate-pulse">Low</p>' : ''}
+                        </div>
+                        `;
+                    }).join('');
+
+                    list.innerHTML = bloodGroups.map(bg => {
+                        const stock = stockMap[bg] || { units: 0, last_updated: null };
+                        const isLow = stock.units < 1000;
+                        return `
+                        <tr class="text-sm hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
+                            <td class="px-6 py-4 font-black text-primary">${bg}</td>
+                            <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">${stock.units} ml</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-widest ${isLow ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">
+                                    ${isLow ? 'Critical' : 'Stable'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-500">${stock.last_updated ? new Date(stock.last_updated).toLocaleString() : 'Never'}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button onclick="openQuickUpdate('${bg}')" class="text-primary hover:underline text-[10px] font-bold uppercase tracking-wider">Update</button>
+                            </td>
+                        </tr>
+                        `;
+                    }).join('');
+
+                } catch(e) {
+                    console.error(e);
+                }
+            }
+
+            window.addStockModal = () => {
+                document.getElementById('stock-modal').classList.remove('hidden');
+            };
+
+            window.closeStockModal = () => {
+                document.getElementById('stock-modal').classList.add('hidden');
+            };
+
+            window.openQuickUpdate = (bg) => {
+                document.getElementById('modal-blood-group').value = bg;
+                addStockModal();
+            };
+
+            document.getElementById('stock-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const bg = document.getElementById('modal-blood-group').value;
+                const units = parseInt(document.getElementById('modal-units').value);
+                const action = document.querySelector('input[name="stock-action"]:checked').value;
+
+                try {
+                    await apiFetch('/hospitals/inventory', {
+                        method: 'POST',
+                        body: JSON.stringify({ blood_group: bg, units, action })
+                    });
+                    closeStockModal();
+                    loadInventory();
+                    alert(`Successfully updated ${bg} stock!`);
+                } catch(err) {
+                    alert(err.message);
+                }
+            });
+
+            loadInventory();
+        });
+    </script>
+</body>
+</html>
